@@ -38,6 +38,7 @@
 #include "intel_display_types.h"
 #include "intel_opregion.h"
 #include "intel_pci_config.h"
+#include "intel_quirks.h"
 
 #define OPREGION_HEADER_OFFSET 0
 #define OPREGION_ACPI_OFFSET   0x100
@@ -1011,6 +1012,8 @@ int intel_opregion_setup(struct drm_i915_private *dev_priv)
 
 	if (dmi_check_system(intel_no_opregion_vbt))
 		goto out;
+
+	intel_init_opregion_quirks(dev_priv);
 
 	if (opregion->header->over.major >= 2 && opregion->asle &&
 	    opregion->asle->rvda && opregion->asle->rvds) {
