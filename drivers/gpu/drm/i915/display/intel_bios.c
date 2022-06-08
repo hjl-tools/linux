@@ -34,6 +34,7 @@
 #include "intel_display.h"
 #include "intel_display_types.h"
 #include "intel_gmbus.h"
+#include "intel_quirks.h"
 
 #define _INTEL_BIOS_PRIVATE
 #include "intel_vbt_defs.h"
@@ -2951,15 +2952,16 @@ bool intel_bios_is_valid_vbt(struct drm_i915_private *i915,
 		return false;
 	}
 
-	size = vbt->vbt_size;
-
 	if (range_overflows_t(size_t,
 			      vbt->bdb_offset,
 			      sizeof(struct bdb_header),
-			      size)) {
+			      vbt->vbt_size)) {
 		drm_dbg_kms(&i915->drm, "BDB header incomplete\n");
 		return false;
 	}
+
+	if (!intel_has_quirk(i915, QUIRK_USE_FW_SIZE_AS_VBT_SIZE))
+		size = vbt->vbt_size;
 
 	bdb = get_bdb_header(vbt);
 	if (range_overflows_t(size_t, vbt->bdb_offset, bdb->bdb_size, size)) {
