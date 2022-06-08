@@ -20,6 +20,7 @@ enum intel_quirk_id {
 	QUIRK_LVDS_SSC_DISABLE,
 	QUIRK_NO_PPS_BACKLIGHT_POWER_HOOK,
 	QUIRK_FW_SYNC_LEN,
+	QUIRK_USE_FW_SIZE_AS_VBT_SIZE,
 };
 
 void intel_init_quirks(struct intel_display *display);
@@ -27,5 +28,6 @@ void intel_init_dpcd_quirks(struct intel_dp *intel_dp,
 			    const struct drm_dp_dpcd_ident *ident);
 bool intel_has_quirk(struct intel_display *display, enum intel_quirk_id quirk);
 bool intel_has_dpcd_quirk(struct intel_dp *intel_dp, enum intel_quirk_id quirk);
+void intel_init_opregion_quirks(struct intel_display *display);
 
 #endif /* __INTEL_QUIRKS_H__ */
