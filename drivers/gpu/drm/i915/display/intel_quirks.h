@@ -17,9 +17,11 @@ enum intel_quirk_id {
 	QUIRK_INVERT_BRIGHTNESS,
 	QUIRK_LVDS_SSC_DISABLE,
 	QUIRK_NO_PPS_BACKLIGHT_POWER_HOOK,
+	QUIRK_USE_FW_SIZE_AS_VBT_SIZE,
 };
 
 void intel_init_quirks(struct drm_i915_private *i915);
 bool intel_has_quirk(struct drm_i915_private *i915, enum intel_quirk_id quirk);
+void intel_init_opregion_quirks(struct drm_i915_private *i915);
 
 #endif /* __INTEL_QUIRKS_H__ */
