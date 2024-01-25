@@ -41,6 +41,10 @@ KCOV_INSTRUMENT_sev.o					:= n
 
 CFLAGS_irq.o := -I $(srctree)/$(src)/../include/asm/trace
 
+CFLAGS_shared-object.o := $(KBUILD_PIC_CFLAGS)
+
+obj-m			+= shared-object.o
+
 obj-y			+= head_$(BITS).o
 obj-y			+= head$(BITS).o
 obj-y			+= ebda.o

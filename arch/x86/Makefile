@@ -168,6 +168,10 @@ else
         KBUILD_CFLAGS += -mcmodel=kernel
         KBUILD_RUSTFLAGS += -Cno-redzone=y
         KBUILD_RUSTFLAGS += -Ccode-model=kernel
+
+        KBUILD_PIC_CFLAGS += -fPIC -mcmodel=small
+        KBUILD_PIC_CFLAGS += $(call cc-option,-fno-plt)
+        export KBUILD_PIC_CFLAGS
 endif
 
 #

@@ -9,6 +9,9 @@ __modfinal:
 include include/config/auto.conf
 include $(srctree)/scripts/Kbuild.include
 
+ARCH_MODFINAL=$(wildcard $(srctree)/arch/$(SRCARCH)/Makefile.modfinal)
+include $(ARCH_MODFINAL)
+
 # for c_flags
 include $(srctree)/scripts/Makefile.lib
 
