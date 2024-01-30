@@ -12,6 +12,16 @@
 #include <linux/stringify.h>
 #include <linux/types.h>
 
+#ifdef __PIC__
+#define JUMP_TABLE_ENTRY				\
+	".pushsection __jump_table,  \"aw\" \n\t"	\
+	_ASM_ALIGN "\n\t"				\
+	".long 1b - . \n\t"				\
+	".long %l[l_yes] - . \n\t"			\
+	_ASM_PTR "%p0 + %c1 - .\n\t"			\
+	".popsection \n\t"
+#define JUMP_TABLE_CONSTRAINT	"Ws"
+#else
 #define JUMP_TABLE_ENTRY				\
 	".pushsection __jump_table,  \"aw\" \n\t"	\
 	_ASM_ALIGN "\n\t"				\
@@ -19,6 +29,8 @@
 	".long %l[l_yes] - . \n\t"			\
 	_ASM_PTR "%c0 + %c1 - .\n\t"			\
 	".popsection \n\t"
+#define JUMP_TABLE_CONSTRAINT	"i"
+#endif
 
 #ifdef CONFIG_HAVE_JUMP_LABEL_HACK
 
@@ -27,7 +39,8 @@ static __always_inline bool arch_static_branch(struct static_key *key, bool bran
 	asm_volatile_goto("1:"
 		"jmp %l[l_yes] # objtool NOPs this \n\t"
 		JUMP_TABLE_ENTRY
-		: :  "i" (key), "i" (2 | branch) : : l_yes);
+		: : JUMP_TABLE_CONSTRAINT (key), "i" (2 | branch)
+		: : l_yes);
 
 	return false;
 l_yes:
@@ -41,7 +54,8 @@ static __always_inline bool arch_static_branch(struct static_key * const key, co
 	asm_volatile_goto("1:"
 		".byte " __stringify(BYTES_NOP5) "\n\t"
 		JUMP_TABLE_ENTRY
-		: :  "i" (key), "i" (branch) : : l_yes);
+		: :  JUMP_TABLE_CONSTRAINT (key), "i" (branch)
+		: : l_yes);
 
 	return false;
 l_yes:
@@ -55,7 +69,8 @@ static __always_inline bool arch_static_branch_jump(struct static_key * const ke
 	asm_volatile_goto("1:"
 		"jmp %l[l_yes]\n\t"
 		JUMP_TABLE_ENTRY
-		: :  "i" (key), "i" (branch) : : l_yes);
+		: :  JUMP_TABLE_CONSTRAINT (key), "i" (branch)
+		: : l_yes);
 
 	return false;
 l_yes:
